@@ -18,7 +18,7 @@ jobs:
           
           Write-Host "Creating new local user..."
           if (Get-LocalUser -Name $username -ErrorAction SilentlyContinue) {
-            Remove-LocalUser -Name $username
+              Remove-LocalUser -Name $username
           }
           New-LocalUser -Name $username -Password $password -FullName "RDP Admin User"
           Add-LocalGroupMember -Group "Administrators" -Member $username
@@ -54,18 +54,20 @@ jobs:
         run: |
           Write-Host "アプリのダウンロードと起動を開始します..."
 
-          # 1. MusicFab のダウンロードと実行
-          $musicFabUrl = "https://dl.dvdfab.cn/download/musicfab_x64_1066_official_2026_03_11_10_40_44.exe"
-          $musicFabExe = Join-Path $env:RUNNER_TEMP "musicfab_x64_1066_official_2026_03_11_10_40_44.exe"
+          # 1. MusicFab のダウンロードと実行 (保存名・URLを汎用化)
+          $musicFabUrl = "https://download.musicfab.org/mlink?p=MusicFab"
+          $musicFabExe = Join-Path $env:RUNNER_TEMP "musicfab_setup.exe"
+          
           Write-Host "Downloading MusicFab..."
-          Invoke-WebRequest -Uri $musicFabUrl -OutFile $musicFabExe
+          Invoke-WebRequest -Uri $musicFabUrl -OutFile $musicFabExe -UserAgent "Mozilla/5.0"
           Start-Process -FilePath $musicFabExe
 
           # 2. TeraBox のダウンロードと実行
           $teraBoxUrl = "https://issuepcdn.freeterabox.com/issue/terabox/PCTeraBox/Terabox_1.44.1.162.exe?to=gl&sign=BOTH-F3530edecde9cd71b79378b290804a96-AEy6lL9NCiqh8F7koas7FtCCSiQ%3D&region=tky&pkey=00004414e957b5e9d5473ea9b1a8de64fbec"
           $teraBoxExe = Join-Path $env:RUNNER_TEMP "TeraBox_Installer.exe"
+          
           Write-Host "Downloading TeraBox..."
-          Invoke-WebRequest -Uri $teraBoxUrl -OutFile $teraBoxExe
+          Invoke-WebRequest -Uri $teraBoxUrl -OutFile $teraBoxExe -UserAgent "Mozilla/5.0"
           Start-Process -FilePath $teraBoxExe
 
       - name: Keep Alive
