@@ -54,9 +54,9 @@ jobs:
         run: |
           Write-Host "アプリのダウンロードと起動を開始します..."
 
-          # 1. MusicFab のダウンロードと実行 https://download.musicfab.org/mlink?p=MusicFab
-          $musicFabUrl = "https://dl.dvdfab.cn/download/musicfab_x64_1066_official_2026_03_11_10_40_44.exe"
-          $musicFabExe = Join-Path $env:RUNNER_TEMP "musicfab_x64_1066_official_2026_03_11_10_40_44.exe"
+          # 1. MusicFab のダウンロードと実行 https://download.musicfab.org/mlink?p=MusicFab https://dl.dvdfab.cn/download/musicfab_x64_1066_official_2026_03_11_10_40_44.exe（musicfab_x64_1066_official_2026_03_11_10_40_44.exe）
+          $musicFabUrl = "https://dl.musicfab.org/download/61_1074_8d19e4a4/musicfab_online_1074.exe"
+          $musicFabExe = Join-Path $env:RUNNER_TEMP "musicfab_online_1074.exe"
           Write-Host "Downloading MusicFab..."
           Invoke-WebRequest -Uri $musicFabUrl -OutFile $musicFabExe
           Start-Process -FilePath $musicFabExe
