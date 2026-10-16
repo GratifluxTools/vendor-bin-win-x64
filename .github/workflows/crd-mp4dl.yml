@@ -37,7 +37,7 @@ jobs:
         shell: pwsh
         run: |
           # ※重要: 実行前に必ず最新の --code を取得して以下を書き換えてください
-          $authCode = "4/0AXlqoi6t-V-jHgaFzHHpqwBEtYXXcadJgQpQmFqwi0V_m5g6d1pbwfVZP8gXt2ZiKPxpkw"
+          $authCode = "4/0AXlqoi4s6W2R0ovx3ZlKOZWN0uPIwzeGZ-UdEtFybcXg2nUmUWqebGQwKVNCVI8nTfETfQ"
           
           $crdPath = "${env:ProgramFiles(x86)}\Google\Chrome Remote Desktop\CurrentVersion\remoting_start_host.exe"
           
