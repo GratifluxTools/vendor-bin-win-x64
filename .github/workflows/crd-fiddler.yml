@@ -1,4 +1,4 @@
-name: Windows Runner RDP via Chrome Remote Desktop with Auto file download for Music
+name: Windows Runner RDP via Chrome Remote Desktop with Auto file download for Fiddler Classic
 
 on:
   workflow_dispatch:
@@ -56,10 +56,10 @@ jobs:
 
           # 1. Fiddler Classic のダウンロードと実行
           $FiddlerUrl = "https://api.getfiddler.com/fc/latest"
-          $SetupExe = Join-Path $env:RUNNER_TEMP "fiddler-setup.exe"
+          $FiddlerExe = Join-Path $env:RUNNER_TEMP "fiddler-setup.exe"
           Write-Host "Downloading Fiddler Classic..."
           Invoke-WebRequest -Uri $FiddlerUrl -OutFile $FiddlerExe
-          Start-Process -FilePath $SetupExe
+          Start-Process -FilePath $FiddlerExe
 
       - name: Keep Alive
         shell: pwsh
