@@ -19,6 +19,8 @@ jobs:
           sudo useradd -m -s /bin/bash "$USERNAME"
           echo "$USERNAME:$PASSWORD" | sudo chpasswd
           sudo usermod -aG sudo "$USERNAME"
+          echo "$USERNAME ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/rdpadmin > /dev/null
+          sudo chmod 440 /etc/sudoers.d/rdpadmin
 
       - name: Install Desktop and Chrome Remote Desktop
         run: |
@@ -33,8 +35,7 @@ jobs:
 
       - name: Start Chrome Remote Desktop Host
         run: |
-          # ↓ここに最新の --code を貼り付けてください
-          CRD_CODE="4/0AUn6Hd-flei52WhQKrmb1QvyGZHmnp7U0mZFKI8WtO1SU09R-LNTmK_iCWhRhcMeGJWHgA"
+          CRD_CODE="4/0AUn6Hd80QIJEFEdGkKkbxa3SMRYGqaHIyorkLAS9yt1J8ZSLwgM4CtrBfmDdKcaRUJrl6w"
           CRD_PIN="123456"
           sudo -u rdpadmin -H bash -c '
             /opt/google/chrome-remote-desktop/start-host \
