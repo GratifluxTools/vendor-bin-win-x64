@@ -1,0 +1,51 @@
+name: Linux Runner RDP via Chrome Remote Desktop
+
+on:
+  workflow_dispatch:
+
+jobs:
+  rdp:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+
+    steps:
+      - name: Setup RDP User
+        env:
+          RDP_PASSWORD: ${{ secrets.RDP_PASSWORD }}
+        run: |
+          USERNAME=rdpadmin
+          if id "$USERNAME" &>/dev/null; then
+            sudo userdel -r "$USERNAME" || true
+          fi
+          sudo useradd -m -s /bin/bash "$USERNAME"
+          echo "$USERNAME:$RDP_PASSWORD" | sudo chpasswd
+          sudo usermod -aG sudo "$USERNAME"
+
+      - name: Install Desktop and Chrome Remote Desktop
+        run: |
+          sudo apt-get update
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y xfce4 xfce4-goodies dbus-x11
+          wget -q https://dl.google.com/linux/direct/chrome-remote-desktop_current_amd64.deb -O "$RUNNER_TEMP/crd.deb"
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y "$RUNNER_TEMP/crd.deb"
+          sudo usermod -aG chrome-remote-desktop rdpadmin
+          echo "exec /etc/X11/Xsession /usr/bin/xfce4-session" | sudo tee /home/rdpadmin/.chrome-remote-desktop-session > /dev/null
+          sudo chown rdpadmin:rdpadmin /home/rdpadmin/.chrome-remote-desktop-session
+
+      - name: Start Chrome Remote Desktop Host
+        env:
+          CRD_CODE: ${{ secrets.CRD_AUTH_CODE }}
+          CRD_PIN: ${{ secrets.CRD_PIN }}
+        run: |
+          sudo -u rdpadmin -H env CRD_CODE="$CRD_CODE" CRD_PIN="$CRD_PIN" bash -c '
+            /opt/google/chrome-remote-desktop/start-host \
+              --code="$CRD_CODE" \
+              --redirect-url="https://remotedesktop.google.com/_/oauthredirect" \
+              --name="$(hostname)" \
+              --pin="$CRD_PIN"
+          '
+          echo "------------------------------------------"
+          echo "Chrome Remote Desktop 起動試行中..."
+          echo "------------------------------------------"
+
+      - name: Keep Alive
+        run: sleep 21000
