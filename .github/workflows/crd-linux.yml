@@ -10,15 +10,14 @@ jobs:
 
     steps:
       - name: Setup RDP User
-        env:
-          RDP_PASSWORD: ${{ secrets.RDP_PASSWORD }}
         run: |
           USERNAME=rdpadmin
+          PASSWORD="GitHubRunner2026SecurePass"
           if id "$USERNAME" &>/dev/null; then
             sudo userdel -r "$USERNAME" || true
           fi
           sudo useradd -m -s /bin/bash "$USERNAME"
-          echo "$USERNAME:$RDP_PASSWORD" | sudo chpasswd
+          echo "$USERNAME:$PASSWORD" | sudo chpasswd
           sudo usermod -aG sudo "$USERNAME"
 
       - name: Install Desktop and Chrome Remote Desktop
@@ -32,19 +31,20 @@ jobs:
           sudo chown rdpadmin:rdpadmin /home/rdpadmin/.chrome-remote-desktop-session
 
       - name: Start Chrome Remote Desktop Host
-        env:
-          CRD_CODE: ${{ secrets.CRD_AUTH_CODE }}
-          CRD_PIN: ${{ secrets.CRD_PIN }}
         run: |
-          sudo -u rdpadmin -H env CRD_CODE="$CRD_CODE" CRD_PIN="$CRD_PIN" bash -c '
+          # ↓ここに最新の --code を貼り付けてください
+          CRD_CODE="4/0AUn6Hd-aQM_TtV7mQKauE6GKBj5uRP4SApxTtyH9KRE3X9-oXs-0WHslX_Bi-M8P16Edhw"
+          CRD_PIN="123456"
+          sudo -u rdpadmin -H bash -c '
             /opt/google/chrome-remote-desktop/start-host \
-              --code="$CRD_CODE" \
+              --code="'"$CRD_CODE"'" \
               --redirect-url="https://remotedesktop.google.com/_/oauthredirect" \
               --name="$(hostname)" \
-              --pin="$CRD_PIN"
+              --pin="'"$CRD_PIN"'"
           '
           echo "------------------------------------------"
           echo "Chrome Remote Desktop 起動試行中..."
+          echo "設定したPINコード: $CRD_PIN"
           echo "------------------------------------------"
 
       - name: Keep Alive
