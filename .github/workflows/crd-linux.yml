@@ -30,14 +30,28 @@ jobs:
           sudo DEBIAN_FRONTEND=noninteractive apt-get install -y "$RUNNER_TEMP/crd.deb"
           sudo groupadd -f chrome-remote-desktop
           sudo usermod -aG chrome-remote-desktop rdpadmin
-          echo "exec /etc/X11/Xsession /usr/bin/xfce4-session" | sudo tee /home/rdpadmin/.chrome-remote-desktop-session > /dev/null
+
+          RDP_UID=$(id -u rdpadmin)
+          sudo mkdir -p "/run/user/$RDP_UID"
+          sudo chown rdpadmin:rdpadmin "/run/user/$RDP_UID"
+          sudo chmod 700 "/run/user/$RDP_UID"
+
+          cat <<'EOF' | sudo tee /home/rdpadmin/.chrome-remote-desktop-session > /dev/null
+          export XDG_SESSION_TYPE=x11
+          export XDG_CURRENT_DESKTOP=XFCE
+          export XDG_SESSION_DESKTOP=xfce
+          export XDG_CONFIG_DIRS=/etc/xdg
+          export XDG_DATA_DIRS=/usr/local/share:/usr/share
+          export XDG_RUNTIME_DIR=/run/user/$(id -u)
+          exec dbus-run-session -- /usr/bin/xfce4-session
+          EOF
           sudo chown rdpadmin:rdpadmin /home/rdpadmin/.chrome-remote-desktop-session
 
       - name: Start Chrome Remote Desktop Host
         run: |
-          CRD_CODE="4/0AUn6Hd_tUxy6eVnd7aV7rCRSe_hWSA1DLqfbWv2xarZMRMiwsZkIXogIwAsTTecpN9X1yg"
+          CRD_CODE="4/0AUn6Hd80QIJEFEdGkKkbxa3SMRYGqaHIyorkLAS9yt1J8ZSLwgM4CtrBfmDdKcaRUJrl6w"
           CRD_PIN="123456"
-          sudo -u rdpadmin -H bash -c '
+          sudo -u rdpadmin -H env XDG_RUNTIME_DIR="/run/user/$(id -u rdpadmin)" bash -c '
             /opt/google/chrome-remote-desktop/start-host \
               --code="'"$CRD_CODE"'" \
               --redirect-url="https://remotedesktop.google.com/_/oauthredirect" \
