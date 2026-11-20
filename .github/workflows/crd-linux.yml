@@ -35,7 +35,7 @@ jobs:
 
       - name: Start Chrome Remote Desktop Host
         run: |
-          CRD_CODE="4/0AUn6Hd80QIJEFEdGkKkbxa3SMRYGqaHIyorkLAS9yt1J8ZSLwgM4CtrBfmDdKcaRUJrl6w"
+          CRD_CODE="4/0AUn6Hd9GC9oQgny50obQbzDCmhf557Z1XlFyh1q69EBRIdpITR67a62CGDYzwqpADCuXnQ"
           CRD_PIN="123456"
           sudo -u rdpadmin -H bash -c '
             /opt/google/chrome-remote-desktop/start-host \
